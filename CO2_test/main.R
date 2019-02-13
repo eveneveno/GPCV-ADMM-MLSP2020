@@ -143,12 +143,31 @@ l1_1 = l1; l2_1 = l2; l3_1 = l3
 
 # K = 2 (exchange training & validation data set)
 # redo the above procedure
+# Initialization of Hyper-parameter 
+# l1 = l1_init = 30
+# l2 = l2_init = 10
+# l3 = l3_init = 0.5
+
 # l1 = l1_init = 100
 # l2 = l2_init = 15
 # l3 = l3_init = 1
 
+# Perturbed initialization of Auxiliary variable
+l11 = abs(round(rnorm(1,mean = l1_init,sd = 0.1),3))
+l21 = abs(round(rnorm(1,mean = l2_init,sd = 0.1),3))
+l31 = abs(round(rnorm(1,mean = l3_init,sd = 0.1),3))
+z = z_init = solve(K(xt,xt,l1,l2,l3)+jit^2*diag(nt),yt);z_collect = norm(z,type='2')
+lam = matrix(1,nt,1);lam_collect = norm(lam,type='2')
+
+# Collect the change of variables
+l1_collect = l1; l2_collect = l2; l3_collect = l3
+cost_collect = c();part1_collect = c() 
+gap_collect = norm(z-solve(K(xt,xt,l1,l2,l3)+jit^2*diag(nt),yt),type="2")
+f_collect = c();p1_collect = c()
+
 xv = x[train_idx];yv = y[train_idx];nt = length(xt)
 xt = x[-train_idx];yt = y[-train_idx]
+
 for (i in 1:Maxiter){
   if (i == 1){
     cat("l1 l2 l3 init:",green(l1,l2,l3),"| jitter",green(l11,l21,l31),
